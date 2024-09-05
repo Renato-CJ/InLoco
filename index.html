@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acompanhamento de Monitoria de Operador</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .form-group > div {
+            flex: 1;
+            min-width: 250px;
+        }
+        .form-control label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-control select, .form-control input, .form-control textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+        .form-control select:focus, .form-control input:focus, .form-control textarea:focus {
+            border-color: #4CAF50;
+        }
+        button {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        @media (max-width: 768px) {
+            table, th, td {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .form-group {
+                flex-direction: column;
+            }
+            .form-control select, textarea, input {
+                width: 100%;
+            }
+        }
+        .chart-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+        }
+        .chart {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Acompanhamento de Monitoria de Operador</h1>
+
+    <!-- Formulário de Monitoria -->
+    <div class="form-group">
+        <div class="form-control">
+            <label for="operador">Operador:</label>
+            <input type="text" id="operador" placeholder="Nome do Operador">
+        </div>
+        <div class="form-control">
+            <label for="monitor">Monitor:</label>
+            <select id="monitor">
+                <option value="">Selecione o monitor</option>
+                <option>Athanny</option>
+                <option>Lucas</option>
+                <option>Douglas</option>
+                <option>Leticia</option>
+                <option>Pietra</option>
+                <option>Valdinete</option>
+                <option>Beatriz</option>
+                <option>Supervisão</option>
+            </select>
+        </div>
+        <div class="form-control">
+            <label for="supervisor">Supervisor:</label>
+            <select id="supervisor">
+                <option value="">Selecione o supervisor</option>
+                <option>Andre</option>
+                <option>Silmara</option>
+                <option>Viviane</option>
+                <option>Franciele</option>
+                <option>Rebeca</option>
+                <option>Erick</option>
+                <option>Adriana Aparecida</option>
+                <option>Davi</option>
+                <option>Larissa Borges</option>
+                <option>Larissa Carmo</option>
+                <option>Klaiver</option>
+                <option>Cesar</option>
+                <option>Cauane</option>
+                <option>Vinicius</option>
+                <option>Thais</option>
+                <option>Isabela</option>
+                <option>Rayssa</option>
+                <option>Gabriel</option>
+            </select>
+        </div>
+        <div class="form-control">
+            <label for="data">Data:</label>
+            <input type="date" id="data">
+        </div>
+    </div>
+
+    <!-- Perguntas de Monitoria -->
+    <div class="form-group">
+        <div class="form-control">
+            <label>Utilizando o roteiro?</label>
+            <select id="pergunta1">
+                <option value="">Selecione</option>
+                <option>Sim</option>
+                <option>Não</option>
+            </select>
+        </div>
+        <div class="form-control">
+            <label>Utilizando nova abordagem?</label>
+            <select id="pergunta2">
+                <option value="">Selecione</option>
+                <option>Sim</option>
+                <option>Não</option>
+            </select>
+        </div>
+        <div class="form-control">
+            <label>Segue os procedimentos?</label>
+            <select id="pergunta3">
+                <option value="">Selecione</option>
+                <option>Sim</option>
+                <option>Não</option>
+            </select>
+        </div>
+        <div class="form-control">
+            <label>Tom inadequado?</label>
+            <select id="pergunta4">
+                <option value="">Selecione</option>
+                <option>Sim</option>
+                <option>Não</option>
+            </select>
+        </div>
+        <div class="form-control">
+            <label>Utiliza o mute?</label>
+            <select id="pergunta5">
+                <option value="">Selecione</option>
+                <option>Sim</option>
+                <option>Não</option>
+            </select>
+        </div>
+        <div class="form-control">
+            <label>Item a melhorar?</label>
+            <select id="pergunta6">
+                <option value="">Selecione</option>
+                <option>Sim</option>
+                <option>Não</option>
+            </select>
+        </div>
+        <div class="form-control">
+            <label>Prontidão no atendimento?</label>
+            <select id="pergunta7">
+                <option value="">Selecione</option>
+                <option>Sim</option>
+                <option>Não</option>
+            </select>
+        </div>
+        <div class="form-control">
+            <label>Omissão no atendimento?</label>
+            <select id="pergunta8">
+                <option value="">Selecione</option>
+                <option>Sim</option>
+                <option>Não</option>
+            </select>
+        </div>
+        <div class="form-control">
+            <label>Observações:</label>
+            <textarea id="observacoes" rows="4" placeholder="Adicione suas observações..."></textarea>
+        </div>
+    </div>
+
+    <button onclick="salvarMonitoria()">Salvar Monitoria</button>
+
+    <!-- Tabela de Monitoria -->
+    <table>
+        <thead>
+            <tr>
+                <th>Operador</th>
+                <th>Monitor</th>
+                <th>Supervisor</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Total de Monitorias</th>
+            </tr>
+        </thead>
+        <tbody id="monitoringTableBody">
+            <!-- Linhas da tabela inseridas via JavaScript -->
+        </tbody>
+    </table>
+
+    <!-- Gráficos de Monitoria -->
+    <div class="chart-container">
+        <div class="chart">
+            <canvas id="monitorChart" width="400" height="200"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="comparisonChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    let monitorias = [
+        { monitor: 'Athanny', total: 0 },
+        { monitor: 'Lucas', total: 0 },
+        { monitor: 'Douglas', total: 0 },
+        { monitor: 'Leticia', total: 0 },
+        { monitor: 'Pietra', total: 0 },
+        { monitor: 'Valdinete', total: 0 },
+        { monitor: 'Beatriz', total: 0 },
+        { monitor: 'Supervisão', total: 0 }
+    ];
+
+    let respostasPorPergunta = {
+        pergunta1: { sim: 0, nao: 0 },
+        pergunta2: { sim: 0, nao: 0 },
+        pergunta3: { sim: 0, nao: 0 },
+        pergunta4: { sim: 0, nao: 0 },
+        pergunta5: { sim: 0, nao: 0 },
+        pergunta6: { sim: 0, nao: 0 },
+        pergunta7: { sim: 0, nao: 0 },
+        pergunta8: { sim: 0, nao: 0 }
+    };
+
+    const ctx = document.getElementById('monitorChart').getContext('2d');
+    const monitorChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: monitorias.map(data => data.monitor),
+            datasets: [{
+                label: 'Total de Monitorias',
+                data: monitorias.map(data => data.total),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(201, 203, 207, 0.2)',
+                    'rgba(100, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(201, 203, 207, 1)',
+                    'rgba(100, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    const ctx2 = document.getElementById('comparisonChart').getContext('2d');
+    const comparisonChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: [
+                'Utilizando o roteiro?',
+                'Utilizando nova abordagem?',
+                'Segue os procedimentos?',
+                'Tom inadequado?',
+                'Utiliza o mute?',
+                'Item a melhorar?',
+                'Prontidão no atendimento?',
+                'Omissão no atendimento?'
+            ],
+            datasets: [
+                {
+                    label: 'Sim',
+                    data: [
+                        respostasPorPergunta.pergunta1.sim,
+                        respostasPorPergunta.pergunta2.sim,
+                        respostasPorPergunta.pergunta3.sim,
+                        respostasPorPergunta.pergunta4.sim,
+                        respostasPorPergunta.pergunta5.sim,
+                        respostasPorPergunta.pergunta6.sim,
+                        respostasPorPergunta.pergunta7.sim,
+                        respostasPorPergunta.pergunta8.sim
+                    ],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Não',
+                    data: [
+                        respostasPorPergunta.pergunta1.nao,
+                        respostasPorPergunta.pergunta2.nao,
+                        respostasPorPergunta.pergunta3.nao,
+                        respostasPorPergunta.pergunta4.nao,
+                        respostasPorPergunta.pergunta5.nao,
+                        respostasPorPergunta.pergunta6.nao,
+                        respostasPorPergunta.pergunta7.nao,
+                        respostasPorPergunta.pergunta8.nao
+                    ],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    function salvarMonitoria() {
+        const operador = document.getElementById('operador').value;
+        const monitor = document.getElementById('monitor').value;
+        const supervisor = document.getElementById('supervisor').value;
+        const data = document.getElementById('data').value;
+        const respostasForm = [
+            document.getElementById('pergunta1').value,
+            document.getElementById('pergunta2').value,
+            document.getElementById('pergunta3').value,
+            document.getElementById('pergunta4').value,
+            document.getElementById('pergunta5').value,
+            document.getElementById('pergunta6').value,
+            document.getElementById('pergunta7').value,
+            document.getElementById('pergunta8').value
+        ];
+
+        if (!monitor) {
+            alert("Selecione um monitor!");
+            return;
+        }
+
+        const status = "Avaliado";
+        const tableBody = document.getElementById('monitoringTableBody');
+        const newRow = `<tr>
+                            <td>${operador}</td>
+                            <td>${monitor}</td>
+                            <td>${supervisor}</td>
+                            <td>${data}</td>
+                            <td>${status}</td>
+                            <td>1</td>
+                        </tr>`;
+        tableBody.insertAdjacentHTML('beforeend', newRow);
+
+        atualizarGrafico(monitor);
+        atualizarRespostas(respostasForm);
+        resetarFormulario();
+    }
+
+    function atualizarGrafico(monitor) {
+        const monitorData = monitorias.find(data => data.monitor === monitor);
+        if (monitorData) {
+            monitorData.total += 1;
+            monitorChart.data.datasets[0].data = monitorias.map(data => data.total);
+            monitorChart.update();
+        }
+    }
+
+    function atualizarRespostas(respostasForm) {
+        respostasForm.forEach((resposta, index) => {
+            const perguntaKey = `pergunta${index + 1}`;
+            if (resposta === 'Sim') {
+                respostasPorPergunta[perguntaKey].sim += 1;
+            } else if (resposta === 'Não') {
+                respostasPorPergunta[perguntaKey].nao += 1;
+            }
+        });
+
+        comparisonChart.data.datasets[0].data = [
+            respostasPorPergunta.pergunta1.sim,
+            respostasPorPergunta.pergunta2.sim,
+            respostasPorPergunta.pergunta3.sim,
+            respostasPorPergunta.pergunta4.sim,
+            respostasPorPergunta.pergunta5.sim,
+            respostasPorPergunta.pergunta6.sim,
+            respostasPorPergunta.pergunta7.sim,
+            respostasPorPergunta.pergunta8.sim
+        ];
+
+        comparisonChart.data.datasets[1].data = [
+            respostasPorPergunta.pergunta1.nao,
+            respostasPorPergunta.pergunta2.nao,
+            respostasPorPergunta.pergunta3.nao,
+            respostasPorPergunta.pergunta4.nao,
+            respostasPorPergunta.pergunta5.nao,
+            respostasPorPergunta.pergunta6.nao,
+            respostasPorPergunta.pergunta7.nao,
+            respostasPorPergunta.pergunta8.nao
+        ];
+
+        comparisonChart.update();
+    }
+
+    function resetarFormulario() {
+        document.getElementById('operador').value = '';
+        document.getElementById('monitor').value = '';
+        document.getElementById('supervisor').value = '';
+        document.getElementById('data').value = '';
+        document.getElementById('pergunta1').value = '';
+        document.getElementById('pergunta2').value = '';
+        document.getElementById('pergunta3').value = '';
+        document.getElementById('pergunta4').value = '';
+        document.getElementById('pergunta5').value = '';
+        document.getElementById('pergunta6').value = '';
+        document.getElementById('pergunta7').value = '';
+        document.getElementById('pergunta8').value = '';
+        document.getElementById('observacoes').value = '';
+    }
+</script>
+
+</body>
+</html>
